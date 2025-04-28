@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, Input, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { RouterModule } from '@angular/router';
 
 /**
  * @description
@@ -16,7 +17,7 @@ export type MenuItem = {
 @Component({
   selector: 'app-custom-sidenav',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatListModule],
+  imports: [CommonModule, MatIconModule, MatListModule, RouterModule],
   template: `
     <div class="sidenav-header">
       <img [width]="profilePicSize()" [height]="profilePicSize()" src="https://cdn.futura-sciences.com/cdn-cgi/image/width=1280,quality=50,format=auto/sources/images/IA-technologie.jpeg"/>
@@ -26,7 +27,9 @@ export type MenuItem = {
       </div>
     </div>
     <mat-nav-list>
-      <a mat-list-item *ngFor="let item of menuItems">
+      <a mat-list-item *ngFor="let item of menuItems" [routerLink]="item.route"
+          routerLinkActive #rla="routerLinkActive"
+          [activated]="rla.isActive">
         <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
         <span matListItemTitle *ngIf="!sideNavCollapsed()">{{ item.label }}</span>
       </a>
@@ -70,8 +73,9 @@ export class CustomSidenavComponent {
   menuItems: MenuItem[] = [
     { icon: 'home', label: 'Home', route: '/' },
     { icon: 'video_library', label: 'Videos', route: '/videos' },
+    { icon: 'analytics', label: 'Analytics', route: '/analytics' },
     { icon: 'account_circle', label: 'Account', route: '/account' },
-    { icon: 'logout', label: 'Logout', route: '/logout' },
+
   ];
   profilePicSize = computed(() => this.sideNavCollapsed() ? '32' : '100');
 }
