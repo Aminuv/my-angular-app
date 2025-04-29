@@ -35,15 +35,25 @@ import { CustomSidenavComponent } from "./components/custom-sidenav/custom-siden
   `,
   styles: [
     `
+    mat-toolbar {
+      position: relative;
+      z-index: 2;
+    }
+
     mat-sidenav-container {
       position: relative;
-      z-index: 05;
+      z-index: 1;
+      height: calc(100vh - 64px);
     }
+    
     .content {
       padding: 24px;
+      transition: margin-left 500ms ease-in-out;
     }
-    mat-sidenav-container {
-      height: calc(100vh - 64px);
+
+    mat-sidenav {
+      transition: width 500ms ease-in-out;
+      overflow-x: hidden;
     }
     `
   ],
