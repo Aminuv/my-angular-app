@@ -12,6 +12,7 @@ export type MenuItem = {
   icon: string;
   label: string;
   route: string;
+  subItems?: MenuItem[];
 };
 
 @Component({
@@ -27,8 +28,8 @@ export type MenuItem = {
       </div>
     </div>
     <mat-nav-list>
+      @for (item of menuItems; track item.label) {
       <a mat-list-item class="menu-item"
-         *ngFor="let item of menuItems"
          [routerLink]="item.route"
          routerLinkActive="selected-menu-item" #rla="routerLinkActive"
          [activated]="rla.isActive">
@@ -36,6 +37,7 @@ export type MenuItem = {
          matListItemIcon>{{ item.icon }}</mat-icon>
         <span matListItemTitle *ngIf="!sideNavCollapsed()">{{ item.label }}</span>
       </a>
+      }
     </mat-nav-list>
   `,
   styles: [
@@ -92,7 +94,12 @@ export class CustomSidenavComponent {
     { icon: 'home', label: 'Home', route: '/home' },
     { icon: 'video_library', label: 'Videos', route: '/videos' },
     { icon: 'analytics', label: 'Analytics', route: '/analytics' },
-    { icon: 'account_circle', label: 'Account', route: '/account' },
+    { icon: 'account_circle', label: 'Account', route: '/account',
+      subItems: [
+      { icon: 'logout', label: 'Logout', route: '/logout' },
+      { icon: 'settings', label: 'Settings', route: '/settings' },
+      { icon: 'profile', label: 'Profile', route: '/profile' },
+    ]},
   ];
   profilePicSize = computed(() => this.sideNavCollapsed() ? '32' : '100');
 }
