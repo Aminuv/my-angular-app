@@ -3,6 +3,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { VideosComponent } from './pages/videos/videos.component';
 import { AnalyticsComponent } from './pages/analytics/analytics.component';
 import { AccountComponent } from './pages/account/account.component';
+import { TableauDeBordComponent } from './pages/tableau-de-bord/tableau-de-bord.component';
 
 export const routes: Routes = [
     {
@@ -25,5 +26,9 @@ export const routes: Routes = [
       {
         path: 'account',
         component: AccountComponent
+      },
+      {
+        path: 'tableau-de-bord',
+        component: TableauDeBordComponent
       }
 ];
