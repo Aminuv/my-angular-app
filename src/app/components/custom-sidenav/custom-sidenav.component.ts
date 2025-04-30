@@ -91,7 +91,6 @@ export class CustomSidenavComponent {
   }
 
   menuItems: MenuItem[] = [
-    { icon: 'dashboard', label: 'Tableau de Bord', route: '/tableau-de-bord' },
     { icon: 'home', label: 'Home', route: '/home' },
     { icon: 'video_library', label: 'Videos', route: '/videos' },
     { icon: 'analytics', label: 'Analytics', route: '/analytics' },
