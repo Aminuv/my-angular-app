@@ -57,6 +57,41 @@ interface Client {
   ],
   template: `
     <div class="dashboard-container">
+      <!-- Navigation Bar -->
+      <mat-toolbar color="primary" class="toolbar-dark">
+        <button mat-icon-button>
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span class="toolbar-spacer">SHELLY CRM</span>
+        <button mat-icon-button class="avatar-button">
+          <div class="avatar">U</div>
+        </button>
+      </mat-toolbar>
+
+      <!-- Tab Navigation -->
+      <div class="tab-navigation">
+        <div class="tab active">
+          <mat-icon>people</mat-icon>
+          <span>Clients</span>
+        </div>
+        <div class="tab">
+          <mat-icon>dashboard</mat-icon>
+          <span>Dashboard</span>
+        </div>
+        <div class="tab">
+          <mat-icon>calendar_today</mat-icon>
+          <span>Planning</span>
+        </div>
+        <div class="tab">
+          <mat-icon>receipt</mat-icon>
+          <span>Factures</span>
+        </div>
+        <div class="tab">
+          <mat-icon>flash_on</mat-icon>
+          <span>Actions</span>
+        </div>
+      </div>
+
       <div class="content-container">
         <!-- Filter Panel -->
         <mat-card class="filter-panel">
