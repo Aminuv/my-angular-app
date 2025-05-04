@@ -2,14 +2,14 @@
 @include mat.core();
 
 body {
-  --primary-color: #cc0000;
+  --primary-color: #0092cc;
 }
 
 $mat-primary: (
-  main: #cc0000,
-  lighter: #f0b3b3,
-  darker: #b90000,
-  200: #cc0000,
+  main: #0036cc,
+  lighter: #b3d8f0,
+  darker: #000cb9,
+  200: #5f00cc,
   contrast: (
     main: #ffffff,
     lighter: #000000,
