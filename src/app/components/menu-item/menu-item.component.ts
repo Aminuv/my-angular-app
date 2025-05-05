@@ -34,7 +34,7 @@ import { MenuItem } from '../custom-sidenav/custom-sidenav.component';
       @if (item().subItems && nestedMenuOpen()) {
         <div>
           @for (subItem of item().subItems; track subItem.label) {
-            <a mat-list-item 
+            <a mat-list-item class="menu-item indented"
             [routerLink]="item().route + '/' + subItem.route"
             routerLinkActive
             #rla="routerLinkActive"
@@ -64,6 +64,10 @@ import { MenuItem } from '../custom-sidenav/custom-sidenav.component';
     .selected-menu-item {
       border-left-color: var(--primary-color);
       background: rgba(0, 0, 0, 0.1);
+    }
+
+    .indented {
+      --mat-list-list-item-leading-icon-start-space: 48px;
     }
   `
 })
