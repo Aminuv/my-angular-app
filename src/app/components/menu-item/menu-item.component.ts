@@ -1,4 +1,4 @@
-import { Component, input, Input } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,6 +10,7 @@ import { MenuItem } from '../custom-sidenav/custom-sidenav.component';
   template: `
     <a mat-list-item class="menu-item"
          [routerLink]="item().route"
+         (click)="toggleNested()"
          routerLinkActive="selected-menu-item" #rla="routerLinkActive"
          [activated]="rla.isActive">
         <mat-icon [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
@@ -17,7 +18,39 @@ import { MenuItem } from '../custom-sidenav/custom-sidenav.component';
          @if (collapsed()) {
          }
         <span matListItemTitle>{{ item().label }}</span>
+        @if (item().subItems && !collapsed()) {
+          <span matListItemTitle>
+            <mat-icon matListItemIcon>
+              @if (nestedMenuOpen()) {
+                <mat-icon>expand_less</mat-icon>
+              } @else {
+                <mat-icon>expand_more</mat-icon>
+              }
+            </mat-icon>
+          </span>
+        }
       </a>
+
+      @if (item().subItems && nestedMenuOpen()) {
+        <div>
+          @for (subItem of item().subItems; track subItem.label) {
+            <a mat-list-item 
+            [routerLink]="item().route + '/' + subItem.route"
+            routerLinkActive
+            #rla="routerLinkActive"
+            [activated]="rla.isActive"
+            >
+              <mat-icon 
+              [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
+              matListItemIcon
+              >{{ subItem.icon }}</mat-icon>
+              @if (collapsed()) {
+              }
+              <span matListItemTitle>{{ item().label }}</span>
+            </a>
+          }
+        </div>
+      }
   `,
   styles: `
   :host * {
@@ -38,4 +71,13 @@ export class MenuItemComponent {
   item = input.required<MenuItem>();
 
   collapsed = input(false);
+
+  nestedMenuOpen = signal(false);
+
+  toggleNested() {
+    if (!this.item().subItems) {
+      return;
+    }
+    this.nestedMenuOpen.set(!this.nestedMenuOpen());
+  }
 }
