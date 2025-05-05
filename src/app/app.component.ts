@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MatToolbarModule } from '@angular/material/toolbar'
-import { MatButtonModule } from '@angular/material/button'
-import { MatIconModule } from '@angular/material/icon'
 import { MatSidenavModule } from '@angular/material/sidenav'
+import { MatIconModule } from '@angular/material/icon'
+import { MatButtonModule } from '@angular/material/button'
 import { CustomSidenavComponent } from "./components/custom-sidenav/custom-sidenav.component";
 
 @Component({
@@ -12,20 +11,17 @@ import { CustomSidenavComponent } from "./components/custom-sidenav/custom-siden
   standalone: true,
   imports: [RouterOutlet,
     CommonModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
     MatSidenavModule,
+    MatIconModule,
+    MatButtonModule,
     CustomSidenavComponent
   ],
   template: `
-    <mat-toolbar class="mat-elevation-z3">
-      <button mat-icon-button (click)="collapsed.set(!collapsed())">
-        <mat-icon >menu</mat-icon>
-      </button>
-    </mat-toolbar>
     <mat-sidenav-container>
       <mat-sidenav opened mode="side" [style.width]="sidenavWidth()">
+        <button mat-icon-button (click)="collapsed.set(!collapsed())">
+          <mat-icon>menu</mat-icon>
+        </button>
         <app-custom-sidenav [collapsed]="collapsed()"></app-custom-sidenav>
       </mat-sidenav>
       <mat-sidenav-content class="content" [style.margin-left]="sidenavWidth()">
@@ -35,25 +31,32 @@ import { CustomSidenavComponent } from "./components/custom-sidenav/custom-siden
   `,
   styles: [
     `
-    mat-toolbar {
-      position: relative;
-      z-index: 2;
+    :host {
+      display: block;
+      height: 100vh;
     }
 
     mat-sidenav-container {
-      position: relative;
-      z-index: 1;
-      height: calc(100vh - 64px);
+      height: 100vh;
+      background-color:rgb(6, 32, 70);
     }
     
     .content {
       padding: 24px;
       transition: margin-left 500ms ease-in-out;
+      background-color:rgb(6, 32, 70);
+      min-height: 100vh;
     }
 
-    mat-sidenav {
-      transition: width 500ms ease-in-out;
-      overflow-x: hidden;
+    ::ng-deep {
+      .mat-drawer-inner-container {
+        overflow: hidden !important;
+      }
+
+      .mat-drawer {
+        background-color:rgb(6, 32, 70);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+      }
     }
     `
   ],

@@ -24,8 +24,8 @@ export interface MenuItem {
     <div class="sidenav-header">
       <img [width]="profilePicSize()" [height]="profilePicSize()" src="https://cdn.futura-sciences.com/cdn-cgi/image/width=1280,quality=50,format=auto/sources/images/IA-technologie.jpeg"/>
       <div class="header-text" [class.hide-header-text]="sideNavCollapsed()">
-        <h1>your Channel</h1>
-        <p>Amine Marbouh</p>
+        <h1>KazaApp</h1>
+        <p>Admin</p>
       </div>
     </div>
     <mat-nav-list>

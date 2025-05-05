@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
@@ -20,6 +19,7 @@ interface ClientData {
   equipe: string;
   status: string;
   ndp: string;
+  documents?: number;
   type: string;
   dates: string;
 }
@@ -29,203 +29,176 @@ interface ClientData {
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
     MatTableModule,
-    MatInputModule,
     MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
     MatChipsModule,
     MatBadgeModule,
-    MatMenuModule
+    FormsModule
   ],
   template: `
-    <div class="dashboard-container">
-      <!-- Search and Actions Bar -->
-      <div class="actions-bar">
-        <div class="search-section">
-          <mat-form-field appearance="outline" class="search-field">
-            <mat-label>Rechercher</mat-label>
-            <input matInput [(ngModel)]="searchText" placeholder="Rechercher...">
-          </mat-form-field>
-          <button mat-stroked-button color="primary">
-            <mat-icon>search</mat-icon>
-          </button>
-          <button mat-stroked-button color="primary">
-            <mat-icon>filter_list</mat-icon>
-          </button>
-          <button mat-stroked-button color="primary">
-            <mat-icon>sort</mat-icon>
-          </button>
-          <button mat-stroked-button color="primary">
-            <mat-icon>print</mat-icon>
-          </button>
-          <button mat-stroked-button color="primary">
-            <mat-icon>file_download</mat-icon>
-          </button>
-        </div>
-        <div class="action-buttons">
-          <button mat-raised-button color="primary" class="preselection-btn">
-            PRÉSÉLECTIONS
-          </button>
-        </div>
-      </div>
+    <div class="container">
+      <mat-form-field>
+        <mat-label>Rechercher</mat-label>
+        <input matInput [(ngModel)]="searchText" placeholder="Rechercher...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
 
-      <!-- Client Count -->
-      <div class="client-count">
-        <mat-icon color="primary">people</mat-icon>
-        <span>4 962 clients</span>
-        <span class="percentage">5.4%</span>
-      </div>
+      <div class="table-container mat-elevation-z8">
+        <table mat-table [dataSource]="filteredData" class="mat-elevation-z8">
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let client">{{ client.id }}</td>
+          </ng-container>
 
-      <!-- Data Table -->
-      <table mat-table [dataSource]="clientData" class="mat-elevation-z2">
-        <!-- ID Column -->
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef>ID</th>
-          <td mat-cell *matCellDef="let element">{{ element.id }}</td>
-        </ng-container>
+          <!-- Nom Column -->
+          <ng-container matColumnDef="nom">
+            <th mat-header-cell *matHeaderCellDef>Nom</th>
+            <td mat-cell *matCellDef="let client">
+              <div class="name-cell">
+                <span class="client-name">{{ client.nom }}</span>
+                <mat-icon class="status-icon" [class.active]="client.status === 'active'">circle</mat-icon>
+              </div>
+            </td>
+          </ng-container>
 
-        <!-- Nom Column -->
-        <ng-container matColumnDef="nom">
-          <th mat-header-cell *matHeaderCellDef>Nom</th>
-          <td mat-cell *matCellDef="let element">
-            <div class="name-cell">
-              <mat-icon>person</mat-icon>
-              <span>{{ element.nom }}</span>
-            </div>
-          </td>
-        </ng-container>
+          <!-- Tel Column -->
+          <ng-container matColumnDef="tel">
+            <th mat-header-cell *matHeaderCellDef>Tél</th>
+            <td mat-cell *matCellDef="let client">{{ client.tel }}</td>
+          </ng-container>
 
-        <!-- Tel Column -->
-        <ng-container matColumnDef="tel">
-          <th mat-header-cell *matHeaderCellDef>Tel</th>
-          <td mat-cell *matCellDef="let element">{{ element.tel }}</td>
-        </ng-container>
+          <!-- Adresse Column -->
+          <ng-container matColumnDef="adresse">
+            <th mat-header-cell *matHeaderCellDef>Adresse</th>
+            <td mat-cell *matCellDef="let client">{{ client.adresse }}</td>
+          </ng-container>
 
-        <!-- Adresse Column -->
-        <ng-container matColumnDef="adresse">
-          <th mat-header-cell *matHeaderCellDef>Adresse</th>
-          <td mat-cell *matCellDef="let element">{{ element.adresse }}</td>
-        </ng-container>
+          <!-- Produits Column -->
+          <ng-container matColumnDef="produits">
+            <th mat-header-cell *matHeaderCellDef>Produits</th>
+            <td mat-cell *matCellDef="let client">
+              <mat-chip-set>
+                <mat-chip>{{ client.produits }}</mat-chip>
+              </mat-chip-set>
+            </td>
+          </ng-container>
 
-        <!-- Produits Column -->
-        <ng-container matColumnDef="produits">
-          <th mat-header-cell *matHeaderCellDef>Produits</th>
-          <td mat-cell *matCellDef="let element">
-            <mat-chip-set>
-              <mat-chip color="primary" selected>{{ element.produits }}</mat-chip>
-            </mat-chip-set>
-          </td>
-        </ng-container>
+          <!-- Equipe Column -->
+          <ng-container matColumnDef="equipe">
+            <th mat-header-cell *matHeaderCellDef>Équipe</th>
+            <td mat-cell *matCellDef="let client">{{ client.equipe }}</td>
+          </ng-container>
 
-        <!-- Equipe Column -->
-        <ng-container matColumnDef="equipe">
-          <th mat-header-cell *matHeaderCellDef>Équipe</th>
-          <td mat-cell *matCellDef="let element">{{ element.equipe }}</td>
-        </ng-container>
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let client">
+              <span [class]="'status-badge ' + client.status.toLowerCase()">{{ client.status }}</span>
+            </td>
+          </ng-container>
 
-        <!-- Status Column -->
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let element">
-            <span class="status-badge" [class]="element.status.toLowerCase()">
-              {{ element.status }}
-            </span>
-          </td>
-        </ng-container>
+          <!-- NDP Column -->
+          <ng-container matColumnDef="ndp">
+            <th mat-header-cell *matHeaderCellDef>NDP</th>
+            <td mat-cell *matCellDef="let client">{{ client.ndp }}</td>
+          </ng-container>
 
-        <!-- NDP Column -->
-        <ng-container matColumnDef="ndp">
-          <th mat-header-cell *matHeaderCellDef>NDP</th>
-          <td mat-cell *matCellDef="let element">{{ element.ndp }}</td>
-        </ng-container>
+          <!-- Type Column -->
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>Type</th>
+            <td mat-cell *matCellDef="let client">{{ client.type }}</td>
+          </ng-container>
 
-        <!-- Type Column -->
-        <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef>Type</th>
-          <td mat-cell *matCellDef="let element">{{ element.type }}</td>
-        </ng-container>
+          <!-- Dates Column -->
+          <ng-container matColumnDef="dates">
+            <th mat-header-cell *matHeaderCellDef>Dates</th>
+            <td mat-cell *matCellDef="let client">{{ client.dates }}</td>
+          </ng-container>
 
-        <!-- Dates Column -->
-        <ng-container matColumnDef="dates">
-          <th mat-header-cell *matHeaderCellDef>Dates</th>
-          <td mat-cell *matCellDef="let element">{{ element.dates }}</td>
-        </ng-container>
+          <!-- Documents Column -->
+          <ng-container matColumnDef="documents">
+            <th mat-header-cell *matHeaderCellDef>Documents</th>
+            <td mat-cell *matCellDef="let client">
+              <mat-form-field appearance="outline" class="small-field">
+                <input matInput type="number" min="0" [value]="client.documents || 0">
+              </mat-form-field>
+            </td>
+          </ng-container>
 
-        <!-- Actions Column -->
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let element">
-            <button mat-icon-button [matMenuTriggerFor]="menu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item>
-                <mat-icon>edit</mat-icon>
-                <span>Modifier</span>
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let client">
+              <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
               </button>
-              <button mat-menu-item>
-                <mat-icon>delete</mat-icon>
-                <span>Supprimer</span>
-              </button>
-            </mat-menu>
-          </td>
-        </ng-container>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item>
+                  <mat-icon>edit</mat-icon>
+                  <span>Modifier</span>
+                </button>
+                <button mat-menu-item>
+                  <mat-icon>delete</mat-icon>
+                  <span>Supprimer</span>
+                </button>
+              </mat-menu>
+            </td>
+          </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
     </div>
   `,
   styles: [`
-    .dashboard-container {
-      padding: 24px;
-      background-color: #fafafa;
+    .container {
+      padding: 20px;
+      background-color: #0A1F3C;
+      min-height: 100vh;
+      color: white;
     }
 
-    .actions-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .search-section {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .search-field {
-      width: 300px;
-    }
-
-    .preselection-btn {
-      height: 40px;
-    }
-
-    .client-count {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 20px;
-      font-size: 14px;
-    }
-
-    .percentage {
-      color: #4caf50;
-      font-weight: 500;
+    .table-container {
+      margin-top: 20px;
+      overflow-x: auto;
+      background-color: white;
+      border-radius: 8px;
     }
 
     table {
       width: 100%;
-      background: white;
     }
 
-    .mat-mdc-row:hover {
-      background-color: #f5f5f5;
+    .mat-column-actions {
+      width: 60px;
+      text-align: center;
+    }
+
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .status-badge.verification {
+      background-color: #FFF3E0;
+      color: #E65100;
+    }
+
+    .status-badge.encours {
+      background-color: #E3F2FD;
+      color: #1565C0;
+    }
+
+    .status-badge.termine {
+      background-color: #E8F5E9;
+      color: #2E7D32;
     }
 
     .name-cell {
@@ -234,48 +207,75 @@ interface ClientData {
       gap: 8px;
     }
 
-    .status-badge {
-      padding: 4px 8px;
-      border-radius: 4px;
+    .status-icon {
       font-size: 12px;
-      font-weight: 500;
+      height: 12px;
+      width: 12px;
+      color: #4CAF50;
     }
 
-    .status-badge.verification {
-      background-color: #ff9800;
+    .status-icon.active {
+      color: #4CAF50;
+    }
+
+    mat-form-field {
+      width: 100%;
+      max-width: 500px;
       color: white;
     }
 
-    .status-badge.welcome {
-      background-color: #4caf50;
-      color: white;
+    ::ng-deep .mat-mdc-form-field-label {
+      color: rgba(255, 255, 255, 0.7) !important;
     }
 
-    .status-badge.audit {
-      background-color: #9c27b0;
-      color: white;
+    ::ng-deep .mat-mdc-text-field-wrapper {
+      background-color: rgba(255, 255, 255, 0.1) !important;
     }
 
-    mat-chip {
-      font-size: 12px;
-      height: 24px;
+    ::ng-deep .mat-mdc-form-field-icon-suffix {
+      color: rgba(255, 255, 255, 0.7);
     }
 
-    th.mat-header-cell {
-      font-weight: 500;
-      color: rgba(0, 0, 0, 0.87);
+    .mat-chip-set {
+      pointer-events: none;
     }
 
-    .mat-column-actions {
-      width: 60px;
-      text-align: center;
+    .mat-chip {
+      background-color: #E3F2FD !important;
+      color: #1565C0 !important;
+      border-radius: 16px !important;
+      font-size: 12px !important;
+      height: 24px !important;
+      padding: 4px 8px !important;
+    }
+
+    .mat-chip .mat-chip-label {
+      padding: 0 !important;
+    }
+
+    .small-field {
+      width: 70px;
+      margin: -1em 0;
+    }
+
+    .small-field .mat-mdc-form-field-infix {
+      padding: 8px 0 !important;
+      min-height: unset;
+    }
+
+    .small-field .mat-mdc-text-field-wrapper {
+      padding: 0 8px;
+      background-color: #f5f5f5;
+    }
+
+    .small-field .mdc-line-ripple {
+      display: none;
     }
   `]
 })
 export class TableauDeBordComponent {
   searchText = '';
-  displayedColumns: string[] = ['id', 'nom', 'tel', 'adresse', 'produits', 'equipe', 'status', 'ndp', 'type', 'dates', 'actions'];
-  
+  displayedColumns: string[] = ['id', 'nom', 'tel', 'adresse', 'produits', 'equipe', 'status', 'ndp', 'type', 'dates', 'documents', 'actions'];
   clientData: ClientData[] = [
     {
       id: 5274,
@@ -287,7 +287,8 @@ export class TableauDeBordComponent {
       status: 'Verification',
       ndp: '••',
       type: 'occupant',
-      dates: '20/04 12:15'
+      dates: '20/04 12:15',
+      documents: 0
     },
     {
       id: 5273,
@@ -299,7 +300,8 @@ export class TableauDeBordComponent {
       status: 'Verification',
       ndp: '••',
       type: 'bailleur',
-      dates: '20/04 13:15'
+      dates: '20/04 13:15',
+      documents: 0
     },
     {
       id: 5275,
@@ -311,7 +313,8 @@ export class TableauDeBordComponent {
       status: 'En cours',
       ndp: '•••',
       type: 'occupant',
-      dates: '21/04 09:30'
+      dates: '21/04 09:30',
+      documents: 0
     },
     {
       id: 5276,
@@ -323,7 +326,8 @@ export class TableauDeBordComponent {
       status: 'Terminé',
       ndp: '•',
       type: 'propriétaire',
-      dates: '21/04 14:45'
+      dates: '21/04 14:45',
+      documents: 0
     },
     {
       id: 5277,
@@ -335,7 +339,8 @@ export class TableauDeBordComponent {
       status: 'En attente',
       ndp: '••',
       type: 'bailleur',
-      dates: '22/04 10:20'
+      dates: '22/04 10:20',
+      documents: 0
     },
     {
       id: 5278,
@@ -347,7 +352,8 @@ export class TableauDeBordComponent {
       status: 'Verification',
       ndp: '•••',
       type: 'occupant',
-      dates: '22/04 15:30'
+      dates: '22/04 15:30',
+      documents: 0
     },
     {
       id: 5279,
@@ -359,7 +365,8 @@ export class TableauDeBordComponent {
       status: 'En cours',
       ndp: '••',
       type: 'propriétaire',
-      dates: '23/04 11:00'
+      dates: '23/04 11:00',
+      documents: 0
     },
     {
       id: 5280,
@@ -371,7 +378,8 @@ export class TableauDeBordComponent {
       status: 'Terminé',
       ndp: '•',
       type: 'bailleur',
-      dates: '23/04 16:15'
+      dates: '23/04 16:15',
+      documents: 0
     },
     {
       id: 5281,
@@ -383,7 +391,8 @@ export class TableauDeBordComponent {
       status: 'Terminé',
       ndp: '•',
       type: 'bailleur',
-      dates: '23/04 16:15'
+      dates: '23/04 16:15',
+      documents: 0
     },
     {
       id: 5282,
@@ -395,7 +404,8 @@ export class TableauDeBordComponent {
       status: 'Terminé',
       ndp: '•',
       type: 'bailleur',
-      dates: '23/04 16:15'
+      dates: '23/04 16:15',
+      documents: 0
     },
     {
       id: 5283,
@@ -407,7 +417,16 @@ export class TableauDeBordComponent {
       status: 'Terminé',
       ndp: '•',
       type: 'bailleur',
-      dates: '23/04 16:15'
+      dates: '23/04 16:15',
+      documents: 0
     }
   ];
+
+  get filteredData(): ClientData[] {
+    return this.clientData.filter(client => 
+      Object.values(client).some(value => 
+        value.toString().toLowerCase().includes(this.searchText.toLowerCase())
+      )
+    );
+  }
 }
