@@ -3,22 +3,23 @@ import { Component, computed, Input, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
+import { MenuItemComponent } from "../menu-item/menu-item.component";
 
 /**
  * @description
  * Interface for the menu items
  */
-export type MenuItem = {
+export interface MenuItem {
   icon: string;
   label: string;
   route: string;
   subItems?: MenuItem[];
-};
+}
 
 @Component({
   selector: 'app-custom-sidenav',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatListModule, RouterModule],
+  imports: [CommonModule, MatIconModule, MatListModule, RouterModule, MenuItemComponent],
   template: `
     <div class="sidenav-header">
       <img [width]="profilePicSize()" [height]="profilePicSize()" src="https://cdn.futura-sciences.com/cdn-cgi/image/width=1280,quality=50,format=auto/sources/images/IA-technologie.jpeg"/>
@@ -29,14 +30,7 @@ export type MenuItem = {
     </div>
     <mat-nav-list>
       @for (item of menuItems; track item.label) {
-      <a mat-list-item class="menu-item"
-         [routerLink]="item.route"
-         routerLinkActive="selected-menu-item" #rla="routerLinkActive"
-         [activated]="rla.isActive">
-        <mat-icon [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
-         matListItemIcon>{{ item.icon }}</mat-icon>
-        <span matListItemTitle *ngIf="!sideNavCollapsed()">{{ item.label }}</span>
-      </a>
+      <app-menu-item [item]="item" [collapsed]="sideNavCollapsed()"></app-menu-item>
       }
     </mat-nav-list>
   `,
@@ -72,15 +66,7 @@ export type MenuItem = {
       height: 0px !important;
     }
 
-    .menu-item {
-      border-left: 5px solid transparent;
-      border-left-color: rgba(0, 0, 0, 0);
-    }
 
-    .selected-menu-item {
-      border-left-color: var(--primary-color);
-      background: rgba(0, 0, 0, 0.1);
-    }
     `
   ],
 })
