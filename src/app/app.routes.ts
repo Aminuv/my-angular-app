@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
 import { VideosComponent } from './pages/videos/videos.component';
 import { AnalyticsComponent } from './pages/analytics/analytics.component';
 import { AccountComponent } from './pages/account/account.component';
