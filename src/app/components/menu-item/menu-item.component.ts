@@ -46,8 +46,8 @@ import { MenuItem } from '../custom-sidenav/custom-sidenav.component';
               matListItemIcon
               >{{ subItem.icon }}</mat-icon>
               @if (collapsed()) {
-              }
               <span matListItemTitle>{{ subItem.label }}</span>
+              }
             </a>
           }
         </div>
