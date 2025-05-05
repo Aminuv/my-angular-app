@@ -3,6 +3,9 @@ import { VideosComponent } from './pages/videos/videos.component';
 import { AnalyticsComponent } from './pages/analytics/analytics.component';
 import { AccountComponent } from './pages/account/account.component';
 import { TableauDeBordComponent } from './pages/tableau-de-bord/tableau-de-bord.component';
+import { ProfileComponent } from './pages/account/profile/profile.component';
+import { LogoutComponent } from './pages/account/logout/logout.component';
+import { SettingsComponent } from './pages/account/settings/settings.component';
 
 export const routes: Routes = [
     {
@@ -24,6 +27,20 @@ export const routes: Routes = [
       },
       {
         path: 'account',
-        component: AccountComponent
+        component: AccountComponent,
+        children: [
+          {
+            path: 'profile',
+            component: ProfileComponent
+          },
+          {
+            path: 'logout',
+            component: LogoutComponent
+          },
+          {
+            path: 'settings',
+            component: SettingsComponent
+          }
+        ]
       }
 ];

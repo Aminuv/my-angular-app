@@ -82,9 +82,9 @@ export class CustomSidenavComponent {
     { icon: 'analytics', label: 'Analytics', route: '/analytics' },
     { icon: 'account_circle', label: 'Account', route: '/account',
       subItems: [
-      { icon: 'logout', label: 'Logout', route: '/logout' },
-      { icon: 'settings', label: 'Settings', route: '/settings' },
       { icon: 'person', label: 'Profile', route: '/profile' },
+      { icon: 'settings', label: 'Settings', route: '/settings' },
+      { icon: 'logout', label: 'Logout', route: '/logout' },
     ]},
   ];
   profilePicSize = computed(() => this.sideNavCollapsed() ? '32' : '100');
