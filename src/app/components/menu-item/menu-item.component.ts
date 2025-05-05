@@ -3,9 +3,21 @@ import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MenuItem } from '../custom-sidenav/custom-sidenav.component';
-
+import { animate, style, transition, trigger } from '@angular/animations';
 @Component({
   selector: 'app-menu-item',
+  standalone: true,
+  animations: [
+    trigger('expandContractMenu', [
+      transition(':enter', [
+        style({ opacity: 0, height: '0px' }),
+        animate('500ms ease-in-out', style({ opacity: 1, height: '*' }))
+      ]),
+      transition(':leave', [
+        animate('500ms ease-in-out', style({ opacity: 0, height: '0px' }))
+      ])
+    ])
+  ],
   imports: [MatListModule, RouterModule, MatIconModule],
   template: `
     <a mat-list-item class="menu-item"
@@ -32,7 +44,7 @@ import { MenuItem } from '../custom-sidenav/custom-sidenav.component';
       </a>
 
       @if (item().subItems && nestedMenuOpen()) {
-        <div>
+        <div [@expandContractMenu]>
           @for (subItem of item().subItems; track subItem.label) {
             <a mat-list-item class="menu-item"
             [class.indented]="!collapsed()"
@@ -45,7 +57,7 @@ import { MenuItem } from '../custom-sidenav/custom-sidenav.component';
               [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
               matListItemIcon
               >{{ subItem.icon }}</mat-icon>
-              @if (collapsed()) {
+              @if (!collapsed()) {
               <span matListItemTitle>{{ subItem.label }}</span>
               }
             </a>
