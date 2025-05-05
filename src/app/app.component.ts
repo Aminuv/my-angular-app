@@ -59,6 +59,7 @@ import { CustomSidenavComponent } from "./components/custom-sidenav/custom-siden
   ],
 })
 export class AppComponent {
+  title = 'my-app';
   collapsed= signal(false);
   sidenavWidth= computed(() => this.collapsed() ? '64px' : '250px');
 }
