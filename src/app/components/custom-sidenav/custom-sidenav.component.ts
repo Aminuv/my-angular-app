@@ -84,7 +84,7 @@ export class CustomSidenavComponent {
       subItems: [
       { icon: 'logout', label: 'Logout', route: '/logout' },
       { icon: 'settings', label: 'Settings', route: '/settings' },
-      { icon: 'profile', label: 'Profile', route: '/profile' },
+      { icon: 'person', label: 'Profile', route: '/profile' },
     ]},
   ];
   profilePicSize = computed(() => this.sideNavCollapsed() ? '32' : '100');
