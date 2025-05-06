@@ -1,0 +1,118 @@
+{
+  "documents": [
+    {
+      "id": 1,
+      "ndp": "NDP-2024-001",
+      "documents": 5,
+      "type": "Facture",
+      "dates": "2024-05-01",
+      "status": "En cours",
+      "client": "Société A",
+      "montant": 15000
+    },
+    {
+      "id": 2,
+      "ndp": "NDP-2024-002",
+      "documents": 3,
+      "type": "Devis",
+      "dates": "2024-05-02",
+      "status": "Validé",
+      "client": "Société B",
+      "montant": 8500
+    },
+    {
+      "id": 3,
+      "ndp": "NDP-2024-003",
+      "documents": 7,
+      "type": "Contrat",
+      "dates": "2024-05-03",
+      "status": "En attente",
+      "client": "Société C",
+      "montant": 25000
+    },
+    {
+      "id": 4,
+      "ndp": "NDP-2024-004",
+      "documents": 4,
+      "type": "Facture",
+      "dates": "2024-05-04",
+      "status": "Validé",
+      "client": "Société D",
+      "montant": 12000
+    },
+    {
+      "id": 5,
+      "ndp": "NDP-2024-005",
+      "documents": 6,
+      "type": "Devis",
+      "dates": "2024-05-05",
+      "status": "En cours",
+      "client": "Société E",
+      "montant": 18500
+    },
+    {
+      "id": 6,
+      "ndp": "NDP-2024-006",
+      "documents": 2,
+      "type": "Contrat",
+      "dates": "2024-05-06",
+      "status": "En attente",
+      "client": "Société F",
+      "montant": 30000
+    },
+    {
+      "id": 7,
+      "ndp": "NDP-2024-007",
+      "documents": 8,
+      "type": "Facture",
+      "dates": "2024-05-07",
+      "status": "Validé",
+      "client": "Société G",
+      "montant": 22000
+    },
+    {
+      "id": 8,
+      "ndp": "NDP-2024-008",
+      "documents": 5,
+      "type": "Devis",
+      "dates": "2024-05-08",
+      "status": "En cours",
+      "client": "Société H",
+      "montant": 16500
+    },
+    {
+      "id": 9,
+      "ndp": "NDP-2024-009",
+      "documents": 3,
+      "type": "Contrat",
+      "dates": "2024-05-09",
+      "status": "En attente",
+      "client": "Société I",
+      "montant": 28000
+    },
+    {
+      "id": 10,
+      "ndp": "NDP-2024-010",
+      "documents": 6,
+      "type": "Facture",
+      "dates": "2024-05-10",
+      "status": "Validé",
+      "client": "Société J",
+      "montant": 20000
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "Admin",
+      "email": "admin@kazaapp.com",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "name": "User Test",
+      "email": "user@kazaapp.com",
+      "role": "user"
+    }
+  ]
+}
