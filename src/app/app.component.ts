@@ -39,13 +39,17 @@ import { CustomSidenavComponent } from "./components/custom-sidenav/custom-siden
 
     mat-sidenav-container {
       height: 100vh;
-      background-color:rgb(6, 32, 70);
+    }
+
+mat-sidenav {
+  transition: width 500ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: width;
     }
     
     .content {
       padding: 24px;
       transition: margin-left 500ms ease-in-out;
-      background-color:rgb(6, 32, 70);
+      //background-color:rgb(6, 32, 70);
       min-height: 100vh;
     }
 

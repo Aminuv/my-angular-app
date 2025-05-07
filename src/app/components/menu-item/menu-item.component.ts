@@ -4,9 +4,11 @@ import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MenuItem } from '../custom-sidenav/custom-sidenav.component';
 import { animate, style, transition, trigger } from '@angular/animations';
+
 @Component({
   selector: 'app-menu-item',
   standalone: true,
+  imports: [MatListModule, RouterModule, MatIconModule],
   animations: [
     trigger('expandContractMenu', [
       transition(':enter', [
@@ -18,102 +20,138 @@ import { animate, style, transition, trigger } from '@angular/animations';
       ])
     ])
   ],
-  imports: [MatListModule, RouterModule, MatIconModule],
   template: `
-    <a mat-list-item class="menu-item"
-         [routerLink]="item().route"
-         (click)="toggleNested()"
-         routerLinkActive="selected-menu-item" #rla="routerLinkActive"
-         [activated]="rla.isActive">
-        <mat-icon [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
-         matListItemIcon>{{ item().icon }}</mat-icon>
-         @if (collapsed()) {
-         }
-        <span matListItemTitle>{{ item().label }}</span>
-        @if (item().subItems && !collapsed()) {
-          <span matListItemTitle>
-            <mat-icon matListItemIcon>
-              @if (nestedMenuOpen()) {
-                <mat-icon>expand_less</mat-icon>
-              } @else {
-                <mat-icon>expand_more</mat-icon>
-              }
+    <a mat-list-item 
+       class="menu-item"
+       [routerLink]="item().route"
+       (click)="toggleNested()"
+       routerLinkActive="selected-menu-item" 
+       #rla="routerLinkActive"
+       [activated]="rla.isActive">
+      <mat-icon 
+        [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
+        matListItemIcon>{{ item().icon }}</mat-icon>
+      @if (!collapsed()) {
+        <ng-container matListItemTitle>
+          <span>{{ item().label }}</span>
+          @if (item().subItems) {
+            <mat-icon class="expand-icon" [class.rotated]="nestedMenuOpen()">
+              {{ nestedMenuOpen() ? 'expand_less' : 'expand_more' }}
             </mat-icon>
-          </span>
-        }
-      </a>
-
-      @if (item().subItems && nestedMenuOpen()) {
-        <div [@expandContractMenu]>
-          @for (subItem of item().subItems; track subItem.label) {
-            <a mat-list-item class="menu-item"
-            [class.indented]="!collapsed()"
-            [routerLink]="item().route + '/' + subItem.route"
-            routerLinkActive
-            #rla="routerLinkActive"
-            [activated]="rla.isActive"
-            >
-              <mat-icon 
-              [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
-              matListItemIcon
-              >{{ subItem.icon }}</mat-icon>
-              @if (!collapsed()) {
-              <span matListItemTitle>{{ subItem.label }}</span>
-              }
-            </a>
           }
-        </div>
+        </ng-container>
       }
-  `,
-  styles: `
+    </a>
 
-  @use "@angular/material" as mat;
- 
-  :host * {
-      transition: all 500ms ease-in-out;
+    @if (item().subItems && nestedMenuOpen() && !collapsed()) {
+      <div [@expandContractMenu]>
+        @for (subItem of item().subItems; track subItem.label) {
+          <a mat-list-item 
+             class="menu-item indented"
+             [routerLink]="item().route + '/' + subItem.route"
+             routerLinkActive="selected-menu-item"
+             #subRla="routerLinkActive"
+             [activated]="subRla.isActive">
+            <mat-icon 
+              [fontSet]="subRla.isActive ? 'material-icons' : 'material-icons-outlined'"
+              matListItemIcon>{{ subItem.icon }}</mat-icon>
+            <span matListItemTitle>{{ subItem.label }}</span>
+          </a>
+        }
+      </div>
     }
-    .menu-item {
-      border-left: 5px solid transparent;
-      border-left-color: rgba(0, 0, 0, 0);
+  `,
+  styles: [`
+    :host {
+      display: block;
+    }
 
-      @include mat.list-overrides((
-        active-indicator-shape: 0px,
-        active-indicator-color: rgba(0, 0, 0, 0.1),
-        list-item-one-line-container-height: 50px,
-      ));
-      
+    :host * {
+      transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .menu-item {
+      border-left: 4px solid transparent;
+      margin: 4px 8px;
+      border-radius: 0 6px 6px 0;
+      overflow: hidden;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+
+        mat-icon {
+          transform: scale(1.1);
+        }
+      }
+
+      mat-icon {
+        margin-right: 8px;
+        transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+      }
     }
 
     .selected-menu-item {
       border-left-color: var(--primary-color);
-      background: rgba(0, 0, 0, 0.1);
+      background: rgba(var(--primary-color-rgb), 0.1);
+      font-weight: 500;
 
-      @include mat.list-overrides((
-        list-item-leading-icon-color: var(--primary-color),
-        list-item-hover-leading-icon-color: var(--primary-color),
-        list-item-label-text-color: var(--primary-color),
-        list-item-hover-label-text-color: var(--primary-color),
-        list-item-focus-label-text-color: var(--primary-color),
-        
-      ));
+      &:hover {
+        background: rgba(var(--primary-color-rgb), 0.15);
+      }
+
+      mat-icon {
+        color: var(--primary-color);
+      }
+
+      ::ng-deep .mdc-list-item__primary-text {
+        color: var(--primary-color);
+      }
     }
 
     .indented {
-      --mat-list-list-item-leading-icon-start-space: 40px;
+      padding-left: 48px;
+      margin-left: 12px;
+      border-left-width: 3px;
+      font-size: 0.95em;
+
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
     }
-  `
+
+    .expand-icon {
+      transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      margin-left: 8px;
+      
+      &.rotated {
+        transform: rotate(180deg);
+      }
+    }
+
+    :host-context(.collapsed) {
+      .menu-item {
+        margin: 4px;
+        border-radius: 6px;
+        border-left-width: 0;
+        justify-content: center;
+
+        mat-icon {
+          margin: 0;
+        }
+      }
+    }
+  `]
 })
 export class MenuItemComponent {
   item = input.required<MenuItem>();
-
-  collapsed = input(false);
-
-  nestedMenuOpen = signal(false);
+  collapsed = input<boolean>(false);
+  nestedMenuOpen = signal<boolean>(false);
 
   toggleNested() {
-    if (!this.item().subItems) {
-      return;
+    if (this.item().subItems) {
+      this.nestedMenuOpen.update(value => !value);
     }
-    this.nestedMenuOpen.set(!this.nestedMenuOpen());
   }
 }
