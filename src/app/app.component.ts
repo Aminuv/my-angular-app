@@ -31,6 +31,7 @@ import { CustomSidenavComponent } from "./components/custom-sidenav/custom-siden
   `,
   styles: [
     `
+    @use "@angular/material" as mat;
     :host {
       display: block;
       height: 100vh;
@@ -58,6 +59,15 @@ import { CustomSidenavComponent } from "./components/custom-sidenav/custom-siden
         border-right: 1px solid rgba(255, 255, 255, 0.1);
       }
     }
+
+    mat-sidenav {
+      @include mat.sidenav-overrides((
+        container-divider-color: rgb(0, 0, 0, 0.1),
+        container-shape: 0px,
+        container-background-color: white,
+      ));
+    }
+
     `
   ],
 })

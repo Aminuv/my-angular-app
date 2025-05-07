@@ -21,7 +21,7 @@ export interface MenuItem {
   standalone: true,
   imports: [CommonModule, MatIconModule, MatListModule, RouterModule, MenuItemComponent],
   template: `
-    <div class="sidenav-header">
+    <div class="sidenav-header ">
       <img [width]="profilePicSize()" [height]="profilePicSize()" src="https://cdn.futura-sciences.com/cdn-cgi/image/width=1280,quality=50,format=auto/sources/images/IA-technologie.jpeg"/>
       <div class="header-text" [class.hide-header-text]="sideNavCollapsed()">
         <h1>KazaApp</h1>
@@ -65,8 +65,6 @@ export interface MenuItem {
       opacity: 0;
       height: 0px !important;
     }
-
-
     `
   ],
 })
