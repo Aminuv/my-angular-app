@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,8 +16,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRippleModule } from '@angular/material/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { trigger, transition, style, animate, state } from '@angular/animations';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
@@ -74,7 +75,8 @@ interface ClientData {
     MatSelectModule,
     MatRippleModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatSidenavModule
   ],
   animations: [
     trigger('detailExpand', [
@@ -725,6 +727,9 @@ interface ClientData {
   `]
 })
 export class TableauDeBordComponent implements OnInit, AfterViewInit {
+  isExpanded(row: ClientData): boolean {
+    return row === this.expandedElement;
+  }
   constructor(private dialog: MatDialog) {}
 
   // Filters and search
@@ -984,30 +989,198 @@ expandedElement: ClientData | null = null;;
   }
 
   openComments(client: ClientData) {
-    const dialogConfig = {
-      width: '500px',
+    const dialogRef = this.dialog.open(CommentDialogComponent, {
+      width: '400px',
+      height: '100vh',
+      position: { right: '0' },
+      panelClass: 'comment-dialog',
       data: {
-        clientId: client.id,
-        clientName: client.nom,
-        comments: client.comments
+        comments: client.comments,
+        clientId: client.id
       }
-    };
-    
-    // Open a simple dialog for now
-    const dialogRef = this.dialog.open(MatDialog, dialogConfig);
+    });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        const comment: Comment = {
-          id: Date.now(),
-          text: result,
-          author: 'User',
-          timestamp: new Date().toLocaleString()
-        };
+    dialogRef.afterClosed().subscribe((comment: Comment | undefined) => {
+      if (comment) {
         client.comments.push(comment);
       }
     });
   }
+}
 
-  isExpanded = (row: ClientData) => row === this.expandedElement;
+@Component({
+  selector: 'app-comment-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+  ],
+  template: `
+    <div class="comment-panel" [@slideIn]>
+      <div class="header">
+        <h2>Commentaires</h2>
+        <button mat-icon-button (click)="close()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="comments-container">
+        <div *ngFor="let comment of data.comments" class="comment">
+          <div class="comment-header">
+            <span class="author">{{comment.author}}</span>
+            <span class="timestamp">{{comment.timestamp}}</span>
+          </div>
+          <div class="comment-content">
+            {{comment.text}}
+          </div>
+        </div>
+
+        <div *ngIf="data.comments.length === 0" class="no-comments">
+          <mat-icon>comment</mat-icon>
+          <p>Aucun commentaire</p>
+        </div>
+      </div>
+
+      <div class="comment-input">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Ajouter un commentaire</mat-label>
+          <textarea matInput [(ngModel)]="newComment" placeholder="Écrivez votre commentaire ici"></textarea>
+        </mat-form-field>
+        <button mat-fab color="primary" (click)="postComment()" [disabled]="!newComment.trim()">
+          <mat-icon>send</mat-icon>
+        </button>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .comment-panel {
+      width: 400px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .comments-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .comment {
+      margin-bottom: 16px;
+      padding: 12px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .author {
+      font-weight: 500;
+      color: #333;
+    }
+
+    .timestamp {
+      color: #666;
+    }
+
+    .comment-content {
+      color: #333;
+      line-height: 1.4;
+    }
+
+    .no-comments {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      height: 200px;
+      text-align: center;
+    }
+
+    .no-comments mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .comment-input {
+      padding: 16px;
+      border-top: 1px solid #eee;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .full-width {
+      width: 100%;
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+  `],
+  animations: [
+    trigger('slideIn', [
+      transition(':enter', [
+        style({ transform: 'translateX(100%)' }),
+        animate('300ms ease-out', style({ transform: 'translateX(0)' }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ transform: 'translateX(100%)' }))
+      ])
+    ])
+  ]
+})
+export class CommentDialogComponent {
+  newComment = '';
+
+  constructor(
+    public dialogRef: MatDialogRef<CommentDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { comments: Comment[], clientId: number }
+  ) {}
+
+  close(): void {
+    this.dialogRef.close();
+  }
+
+  postComment(): void {
+    if (this.newComment.trim()) {
+      const comment: Comment = {
+        id: Date.now(),
+        text: this.newComment.trim(),
+        author: 'User',
+        timestamp: new Date().toLocaleString()
+      };
+      this.dialogRef.close(comment);
+    }
+  }
 }
