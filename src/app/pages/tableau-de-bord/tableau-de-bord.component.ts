@@ -81,8 +81,8 @@ interface ClientData {
       <mat-card class="search-card">
         <div class="search-filters">
           <mat-form-field appearance="outline" class="search-field">
-            <mat-label>Rechercher</mat-label>
-            <input matInput [formControl]="searchControl" placeholder="Rechercher...">
+            <mat-label>Rechercher par ID ou nom</mat-label>
+            <input matInput [formControl]="searchControl" placeholder="Entrez un ID ou nom...">
             <button *ngIf="searchControl.value" matSuffix mat-icon-button aria-label="Clear" (click)="searchControl.setValue('')">
               <mat-icon>close</mat-icon>
             </button>
@@ -260,8 +260,8 @@ interface ClientData {
           </tr>
         </table>
 
-        <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" 
-                       showFirstLastButtons 
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]"
+                       showFirstLastButtons
                        aria-label="Sélectionner une page de clients">
         </mat-paginator>
       </div>
@@ -786,16 +786,9 @@ export class TableauDeBordComponent implements OnInit, AfterViewInit {
     
     // Custom filtering function for MatTableDataSource
     this.dataSource.filterPredicate = (data: ClientData, filter: string) => {
-      const searchStr = (
-        data.nom.toLowerCase() + ' ' +
-        data.tel.toLowerCase() + ' ' +
-        data.adresse.toLowerCase() + ' ' +
-        data.produits.toLowerCase() + ' ' +
-        data.equipe.toLowerCase() + ' ' +
-        data.status.toLowerCase() + ' ' +
-        data.type.toLowerCase()
-      );
-      return searchStr.indexOf(filter) !== -1;
+      const searchStr = filter.toLowerCase();
+      return data.id.toString().includes(searchStr) ||
+             data.nom.toLowerCase().includes(searchStr);
     };
     
     // Set up search and filter subscriptions
