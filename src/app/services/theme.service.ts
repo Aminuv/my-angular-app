@@ -12,9 +12,9 @@ export class ThemeService {
     appTheme = signal<'light' | 'dark'|'system'>('system');
 
     ThemeList: AppTheme[] = [
-        { name: 'Light', icon: 'wb_sunny' },
-        { name: 'Dark', icon: 'nights_stay' },
-        { name: 'System', icon: 'computer' },
+        { name: 'Clair', icon: 'wb_sunny' },
+        { name: 'Sombre', icon: 'nights_stay' },
+        { name: 'Système', icon: 'computer' },
     ];
 
     getThemes() {

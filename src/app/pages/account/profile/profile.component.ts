@@ -28,14 +28,14 @@ import { MatInputModule } from '@angular/material/input';
       <mat-card class="profile-card">
         <div class="profile-header">
           <div class="profile-avatar">
-            <img src="assets/default-avatar.png" alt="Profile picture">
+            <img src="assets/default-avatar.png" alt="Photo de profil">
             <button mat-mini-fab color="primary" class="change-photo-btn">
               <mat-icon>photo_camera</mat-icon>
             </button>
           </div>
           <div class="profile-info">
             <h1>John Doe</h1>
-            <p class="role">Administrator</p>
+            <p class="role">Administrateur</p>
             <p class="email">john.doe&#64;example.com</p>
           </div>
         </div>
@@ -43,7 +43,7 @@ import { MatInputModule } from '@angular/material/input';
         <mat-divider></mat-divider>
 
         <div class="profile-details">
-          <h2>Personal Information</h2>
+          <h2>Informations personnelles</h2>
           
           <div class="form-grid">
             <mat-form-field appearance="outline">
@@ -67,27 +67,27 @@ import { MatInputModule } from '@angular/material/input';
             </mat-form-field>
           </div>
 
-          <h2>Additional Information</h2>
+          <h2>Informations complémentaires</h2>
           <div class="form-grid">
             <mat-form-field appearance="outline">
               <mat-label>Département</mat-label>
-              <input matInput value="Sales">
+              <input matInput value="Ventes">
             </mat-form-field>
 
             <mat-form-field appearance="outline">
               <mat-label>Localisation</mat-label>
-              <input matInput value="New York">
+              <input matInput value="Paris">
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Biographie</mat-label>
-              <textarea matInput rows="4">Experienced sales professional with over 5 years in the industry.</textarea>
+              <textarea matInput rows="4">Professionnel de la vente expérimenté avec plus de 5 ans dans le secteur.</textarea>
             </mat-form-field>
           </div>
 
           <div class="action-buttons">
-            <button mat-raised-button color="primary">Save Changes</button>
-            <button mat-stroked-button>Cancel</button>
+            <button mat-raised-button color="primary">Enregistrer les modifications</button>
+            <button mat-stroked-button>Annuler</button>
           </div>
         </div>
       </mat-card>

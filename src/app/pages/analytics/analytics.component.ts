@@ -13,7 +13,7 @@ import { BehaviorSubject, interval, Subscription } from 'rxjs';
     <div class="analytics-container">
       <div class="dashboard-header">
         <h1 class="page-title">Tableau de bord analytique</h1>
-        <div class="last-update">Last updated: {{ lastUpdate | date:'medium' }}</div>
+        <div class="last-update">Dernière mise à jour: {{ lastUpdate | date:'medium' }}</div>
       </div>
       
       <mat-grid-list cols="2" rowHeight="200px" gutterSize="16">
@@ -22,14 +22,14 @@ import { BehaviorSubject, interval, Subscription } from 'rxjs';
             <mat-card-header>
               <mat-card-title>
                 <mat-icon>trending_up</mat-icon>
-                Total Views
+                Vues totales
               </mat-card-title>
             </mat-card-header>
             <mat-card-content>
               <div class="metric">{{ formatValue(metrics.totalViews.value.value, 'totalViews') }}</div>
               <div class="trend" [class.positive]="metrics.totalViews.value.trend > 0"
                    [class.negative]="metrics.totalViews.value.trend < 0">
-                {{ metrics.totalViews.value.trend > 0 ? '+' : '' }}{{ metrics.totalViews.value.trend }}% vs last week
+                {{ metrics.totalViews.value.trend > 0 ? '+' : '' }}{{ metrics.totalViews.value.trend }}% vs semaine dernière
               </div>
             </mat-card-content>
           </mat-card>
@@ -40,14 +40,14 @@ import { BehaviorSubject, interval, Subscription } from 'rxjs';
             <mat-card-header>
               <mat-card-title>
                 <mat-icon>people</mat-icon>
-                Active Users
+                Utilisateurs actifs
               </mat-card-title>
             </mat-card-header>
             <mat-card-content>
               <div class="metric">{{ formatValue(metrics.activeUsers.value.value, 'activeUsers') }}</div>
               <div class="trend" [class.positive]="metrics.activeUsers.value.trend > 0"
                    [class.negative]="metrics.activeUsers.value.trend < 0">
-                {{ metrics.activeUsers.value.trend > 0 ? '+' : '' }}{{ metrics.activeUsers.value.trend }}% vs last week
+                {{ metrics.activeUsers.value.trend > 0 ? '+' : '' }}{{ metrics.activeUsers.value.trend }}% vs semaine dernière
               </div>
             </mat-card-content>
           </mat-card>
@@ -58,14 +58,14 @@ import { BehaviorSubject, interval, Subscription } from 'rxjs';
             <mat-card-header>
               <mat-card-title>
                 <mat-icon>timer</mat-icon>
-                Avg. Session Time
+                Durée moyenne de session
               </mat-card-title>
             </mat-card-header>
             <mat-card-content>
               <div class="metric">{{ formatValue(metrics.avgSessionTime.value.value, 'avgSessionTime') }}</div>
               <div class="trend" [class.positive]="metrics.avgSessionTime.value.trend > 0"
                    [class.negative]="metrics.avgSessionTime.value.trend < 0">
-                {{ metrics.avgSessionTime.value.trend > 0 ? '+' : '' }}{{ metrics.avgSessionTime.value.trend }}% vs last week
+                {{ metrics.avgSessionTime.value.trend > 0 ? '+' : '' }}{{ metrics.avgSessionTime.value.trend }}% vs semaine dernière
               </div>
             </mat-card-content>
           </mat-card>
@@ -76,14 +76,14 @@ import { BehaviorSubject, interval, Subscription } from 'rxjs';
             <mat-card-header>
               <mat-card-title>
                 <mat-icon>done_all</mat-icon>
-                Completion Rate
+                Taux de complétion
               </mat-card-title>
             </mat-card-header>
             <mat-card-content>
               <div class="metric">{{ formatValue(metrics.completionRate.value.value, 'completionRate') }}</div>
               <div class="trend" [class.positive]="metrics.completionRate.value.trend > 0"
                    [class.negative]="metrics.completionRate.value.trend < 0">
-                {{ metrics.completionRate.value.trend > 0 ? '+' : '' }}{{ metrics.completionRate.value.trend }}% vs last week
+                {{ metrics.completionRate.value.trend > 0 ? '+' : '' }}{{ metrics.completionRate.value.trend }}% vs semaine dernière
               </div>
             </mat-card-content>
           </mat-card>

@@ -32,7 +32,7 @@ import { MatInputModule } from '@angular/material/input';
       <h1 class="settings-title">Paramètres</h1>
 
       <div class="settings-grid">
-        <!-- Account Settings -->
+        <!-- Paramètres du compte -->
         <mat-card class="settings-card">
           <mat-card-header>
             <mat-icon mat-card-avatar>person</mat-icon>
@@ -43,8 +43,8 @@ import { MatInputModule } from '@angular/material/input';
               <mat-list-item>
                 <div class="setting-item">
                   <div>
-                    <h3>Two-Factor Authentication</h3>
-                    <p>Add an extra layer of security to your account</p>
+                    <h3>Authentification à deux facteurs</h3>
+                    <p>Ajoutez une couche de sécurité supplémentaire à votre compte</p>
                   </div>
                   <mat-slide-toggle color="primary"></mat-slide-toggle>
                 </div>
@@ -53,8 +53,8 @@ import { MatInputModule } from '@angular/material/input';
               <mat-list-item>
                 <div class="setting-item">
                   <div>
-                    <h3>Email Notifications</h3>
-                    <p>Receive email updates about your account</p>
+                    <h3>Notifications par e-mail</h3>
+                    <p>Recevez des mises à jour par e-mail concernant votre compte</p>
                   </div>
                   <mat-slide-toggle color="primary" checked></mat-slide-toggle>
                 </div>
@@ -63,7 +63,7 @@ import { MatInputModule } from '@angular/material/input';
           </mat-card-content>
         </mat-card>
 
-        <!-- Appearance Settings -->
+        <!-- Paramètres d'apparence -->
         <mat-card class="settings-card">
           <mat-card-header>
             <mat-icon mat-card-avatar>palette</mat-icon>
@@ -74,14 +74,14 @@ import { MatInputModule } from '@angular/material/input';
               <mat-list-item>
                 <div class="setting-item">
                   <div>
-                    <h3>Theme</h3>
-                    <p>Choose your preferred theme</p>
+                    <h3>Thème</h3>
+                    <p>Choisissez votre thème préféré</p>
                   </div>
                   <mat-form-field appearance="outline">
                     <mat-select value="light">
-                      <mat-option value="light">Light</mat-option>
-                      <mat-option value="dark">Dark</mat-option>
-                      <mat-option value="system">System</mat-option>
+                      <mat-option value="light">Clair</mat-option>
+                      <mat-option value="dark">Sombre</mat-option>
+                      <mat-option value="system">Système</mat-option>
                     </mat-select>
                   </mat-form-field>
                 </div>
@@ -90,8 +90,8 @@ import { MatInputModule } from '@angular/material/input';
               <mat-list-item>
                 <div class="setting-item">
                   <div>
-                    <h3>Compact Mode</h3>
-                    <p>Use compact view for denser content display</p>
+                    <h3>Mode compact</h3>
+                    <p>Utilisez une vue compacte pour un affichage plus dense</p>
                   </div>
                   <mat-slide-toggle color="primary"></mat-slide-toggle>
                 </div>
@@ -176,8 +176,8 @@ import { MatInputModule } from '@angular/material/input';
       </div>
 
       <div class="settings-actions">
-        <button mat-stroked-button>Cancel</button>
-        <button mat-raised-button color="primary">Save Changes</button>
+        <button mat-stroked-button>Annuler</button>
+        <button mat-raised-button color="primary">Enregistrer les modifications</button>
       </div>
     </div>
   `,
