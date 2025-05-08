@@ -8,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatMenuModule } from '@angular/material/menu';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatCardModule } from '@angular/material/card';
@@ -18,9 +18,22 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { trigger, transition, style, animate } from '@angular/animations';
-import { FormControl } from '@angular/forms';
+import { trigger, transition, style, animate, state } from '@angular/animations';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
+interface Comment {
+  id: number;
+  text: string;
+  author: string;
+  timestamp: string;
+}
+
+interface Comment {
+  id: number;
+  text: string;
+  author: string;
+  timestamp: string;
+}
 
 interface ClientData {
   id: number;
@@ -34,6 +47,8 @@ interface ClientData {
   documents?: number;
   type: string;
   dates: string;
+  comments: Comment[];
+  expanded?: boolean;
 }
 
 @Component({
@@ -62,6 +77,11 @@ interface ClientData {
     MatSnackBarModule
   ],
   animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
     trigger('fadeIn', [
       transition(':enter', [
         style({ opacity: 0 }),
@@ -127,9 +147,6 @@ interface ClientData {
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Nom</th>
             <td mat-cell *matCellDef="let client">
               <div class="name-cell">
-                <div class="avatar">
-                  {{ client.nom.charAt(0) }}
-                </div>
                 <div class="client-details">
                   <span class="client-name">{{ client.nom }}</span>
                   <span class="client-type">{{ client.type }}</span>
@@ -184,29 +201,17 @@ interface ClientData {
             </td>
           </ng-container>
 
-          <!-- Documents Column -->
-          <ng-container matColumnDef="documents">
-            <th mat-header-cell *matHeaderCellDef>Documents</th>
-            <td mat-cell *matCellDef="let client; let i = index">
-              <div class="document-control">
-                <button mat-icon-button color="primary" (click)="decrementDoc(i)" [disabled]="client.documents <= 0">
-                  <mat-icon>remove</mat-icon>
-                </button>
-                <span class="doc-count">{{ client.documents || 0 }}</span>
-                <button mat-icon-button color="primary" (click)="incrementDoc(i)">
-                  <mat-icon>add</mat-icon>
-                </button>
-              </div>
-            </td>
-          </ng-container>
-
-          <!-- Info Column -->
-          <ng-container matColumnDef="info">
-            <th mat-header-cell *matHeaderCellDef>Info</th>
+          <!-- Comments Column -->
+          <ng-container matColumnDef="comments">
+            <th mat-header-cell *matHeaderCellDef>Commentaires</th>
             <td mat-cell *matCellDef="let client">
-              <div class="info-cell">
-                <div><strong>NDP: </strong>{{ client.ndp }}</div>
-                <div><strong>Date: </strong>{{ client.dates }}</div>
+              <div class="comments-cell">
+                <button mat-icon-button color="primary" (click)="openComments(client)" [attr.aria-label]="'Voir ' + client.comments.length + ' commentaires pour ' + client.nom">
+                  <mat-icon [matBadge]="client.comments.length" matBadgeColor="accent" 
+                           [matBadgeHidden]="client.comments.length === 0"
+                           aria-hidden="false"
+                           [attr.aria-label]="client.comments.length + ' commentaires'">comment</mat-icon>
+                </button>
               </div>
             </td>
           </ng-container>
@@ -216,26 +221,28 @@ interface ClientData {
             <th mat-header-cell *matHeaderCellDef>Actions</th>
             <td mat-cell *matCellDef="let client">
               <div class="action-buttons">
-                <button mat-icon-button color="primary" matTooltip="Éditer">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button color="warn" matTooltip="Supprimer">
-                  <mat-icon>delete</mat-icon>
-                </button>
-                <button mat-icon-button matTooltip="Plus d'options" [matMenuTriggerFor]="menu">
-                  <mat-icon>more_vert</mat-icon>
+                <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Actions" aria-label="Menu d'actions">
+                  <mat-icon aria-hidden="false">more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
                   <button mat-menu-item>
-                    <mat-icon>visibility</mat-icon>
+                    <mat-icon aria-hidden="true">edit</mat-icon>
+                    <span>Éditer</span>
+                  </button>
+                  <button mat-menu-item color="warn">
+                    <mat-icon aria-hidden="true">delete</mat-icon>
+                    <span>Supprimer</span>
+                  </button>
+                  <button mat-menu-item>
+                    <mat-icon aria-hidden="true">visibility</mat-icon>
                     <span>Voir détails</span>
                   </button>
                   <button mat-menu-item>
-                    <mat-icon>history</mat-icon>
+                    <mat-icon aria-hidden="true">history</mat-icon>
                     <span>Historique</span>
                   </button>
                   <button mat-menu-item>
-                    <mat-icon>print</mat-icon>
+                    <mat-icon aria-hidden="true">print</mat-icon>
                     <span>Imprimer</span>
                   </button>
                 </mat-menu>
@@ -243,17 +250,48 @@ interface ClientData {
             </td>
           </ng-container>
 
+          <!-- Expanded Content Column -->
+          <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let client" [attr.colspan]="displayedColumns.length">
+              <div class="expanded-detail" [@detailExpand]="client == expandedElement ? 'expanded' : 'collapsed'">
+                <div class="documents-section">
+                  <h3>Documents</h3>
+                  <div class="document-control">
+                    <button mat-icon-button color="primary" (click)="decrementDoc(client)" [disabled]="client.documents <= 0" aria-label="Supprimer un document">
+                      <mat-icon aria-hidden="false">remove</mat-icon>
+                    </button>
+                    <span class="doc-count">{{ client.documents || 0 }}</span>
+                    <button mat-icon-button color="primary" (click)="incrementDoc(client)" aria-label="Ajouter un document">
+                      <mat-icon aria-hidden="false">add</mat-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="info-section">
+                  <h3>Informations</h3>
+                  <div class="info-details">
+                    <div><strong>NDP: </strong>{{ client.ndp }}</div>
+                    <div><strong>Date: </strong>{{ client.dates }}</div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
           <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="client-row" 
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="client-row"
               [class.selected-row]="selectedRow === row"
+              [class.expanded-row]="expandedElement === row"
               (click)="selectRow(row)"
               matRipple></tr>
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']; when: isExpanded" class="detail-row"
+              [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'"
+              [class.expanded-detail-row]="expandedElement === row"></tr>
 
           <!-- Row shown when no matching data -->
           <tr class="mat-row" *matNoDataRow>
             <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
               <div class="no-data-message">
-                <mat-icon>search_off</mat-icon>
+                <mat-icon aria-hidden="true">search_off</mat-icon>
                 <p>Aucun résultat trouvé pour "{{searchControl.value}}"</p>
               </div>
             </td>
@@ -504,6 +542,74 @@ interface ClientData {
       color: #6B46C1;
     }
 
+    /* Comments styles */
+    .comments-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Expanded row styles */
+    .detail-row {
+      height: 0;
+    }
+
+    .client-row td {
+      border-bottom-width: 0;
+    }
+
+    .expanded-detail {
+      overflow: hidden;
+      display: flex;
+      gap: 24px;
+      padding: 16px;
+      background-color: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .documents-section,
+    .info-section {
+      flex: 1;
+      padding: 16px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .documents-section h3,
+    .info-section h3 {
+      margin: 0 0 16px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .document-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .doc-count {
+      min-width: 24px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .info-details {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .expanded-row {
+      background-color: #f8fafc;
+    }
+
+    .expanded-detail-row {
+      background-color: #f8fafc;
+    }
+
     /* Document counter */
     .document-control {
       display: flex;
@@ -619,13 +725,16 @@ interface ClientData {
   `]
 })
 export class TableauDeBordComponent implements OnInit, AfterViewInit {
+  constructor(private dialog: MatDialog) {}
+
   // Filters and search
   searchControl = new FormControl('');
   statusFilter = new FormControl('');
   typeFilter = new FormControl('');
   
   // Table config
-  displayedColumns: string[] = ['id', 'nom', 'contact', 'produits', 'equipe', 'status', 'documents', 'info', 'actions'];
+  displayedColumns: string[] = ['id', 'nom', 'contact', 'produits', 'equipe', 'status', 'comments', 'actions'];
+expandedElement: ClientData | null = null;;
   dataSource: any;
   selectedRow: ClientData | null = null;
   
@@ -644,7 +753,8 @@ export class TableauDeBordComponent implements OnInit, AfterViewInit {
       ndp: '••',
       type: 'occupant',
       dates: '20/04 12:15',
-      documents: 0
+      documents: 0,
+      comments: []
     },
     {
       id: 5273,
@@ -657,7 +767,8 @@ export class TableauDeBordComponent implements OnInit, AfterViewInit {
       ndp: '••',
       type: 'bailleur',
       dates: '20/04 13:15',
-      documents: 0
+      documents: 0,
+      comments: []
     },
     {
       id: 5275,
@@ -670,7 +781,8 @@ export class TableauDeBordComponent implements OnInit, AfterViewInit {
       ndp: '•••',
       type: 'occupant',
       dates: '21/04 09:30',
-      documents: 0
+      documents: 0,
+      comments: []
     },
     {
       id: 5276,
@@ -683,7 +795,8 @@ export class TableauDeBordComponent implements OnInit, AfterViewInit {
       ndp: '•',
       type: 'propriétaire',
       dates: '21/04 14:45',
-      documents: 0
+      documents: 0,
+      comments: []
     },
     {
       id: 5277,
@@ -696,7 +809,8 @@ export class TableauDeBordComponent implements OnInit, AfterViewInit {
       ndp: '••',
       type: 'bailleur',
       dates: '22/04 10:20',
-      documents: 0
+      documents: 0,
+      comments: []
     },
     {
       id: 5278,
@@ -709,7 +823,8 @@ export class TableauDeBordComponent implements OnInit, AfterViewInit {
       ndp: '•••',
       type: 'occupant',
       dates: '22/04 15:30',
-      documents: 0
+      documents: 0,
+      comments: []
     },
     {
       id: 5279,
@@ -722,7 +837,8 @@ export class TableauDeBordComponent implements OnInit, AfterViewInit {
       ndp: '••',
       type: 'propriétaire',
       dates: '23/04 11:00',
-      documents: 0
+      documents: 0,
+      comments: []
     },
     {
       id: 5280,
@@ -735,7 +851,8 @@ export class TableauDeBordComponent implements OnInit, AfterViewInit {
       ndp: '•',
       type: 'bailleur',
       dates: '23/04 16:15',
-      documents: 0
+      documents: 0,
+      comments: []
     },
     {
       id: 5281,
@@ -748,7 +865,8 @@ export class TableauDeBordComponent implements OnInit, AfterViewInit {
       ndp: '•',
       type: 'bailleur',
       dates: '23/04 16:15',
-      documents: 0
+      documents: 0,
+      comments: []
     },
     {
       id: 5282,
@@ -761,7 +879,8 @@ export class TableauDeBordComponent implements OnInit, AfterViewInit {
       ndp: '•',
       type: 'bailleur',
       dates: '23/04 16:15',
-      documents: 0
+      documents: 0,
+      comments: []
     },
     {
       id: 5283,
@@ -774,7 +893,8 @@ export class TableauDeBordComponent implements OnInit, AfterViewInit {
       ndp: '•',
       type: 'bailleur',
       dates: '23/04 16:15',
-      documents: 0
+      documents: 0,
+      comments: []
     }
   ];
 
@@ -847,20 +967,47 @@ export class TableauDeBordComponent implements OnInit, AfterViewInit {
     }
   }
   
-  incrementDoc(index: number) {
-    if (!this.clientData[index].documents) {
-      this.clientData[index].documents = 0;
-    }
-    this.clientData[index].documents!++;
+  incrementDoc(client: ClientData) {
+    if (!client.documents) client.documents = 0;
+    client.documents++;
   }
-  
-  decrementDoc(index: number) {
-    if (this.clientData[index].documents && this.clientData[index].documents! > 0) {
-      this.clientData[index].documents!--;
+
+  decrementDoc(client: ClientData) {
+    if (client.documents && client.documents > 0) {
+      client.documents--;
     }
   }
-  
+
   selectRow(row: ClientData) {
-    this.selectedRow = this.selectedRow === row ? null : row;
+    this.expandedElement = this.expandedElement === row ? null : row;
+    this.selectedRow = row;
   }
+
+  openComments(client: ClientData) {
+    const dialogConfig = {
+      width: '500px',
+      data: {
+        clientId: client.id,
+        clientName: client.nom,
+        comments: client.comments
+      }
+    };
+    
+    // Open a simple dialog for now
+    const dialogRef = this.dialog.open(MatDialog, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const comment: Comment = {
+          id: Date.now(),
+          text: result,
+          author: 'User',
+          timestamp: new Date().toLocaleString()
+        };
+        client.comments.push(comment);
+      }
+    });
+  }
+
+  isExpanded = (row: ClientData) => row === this.expandedElement;
 }
