@@ -77,12 +77,12 @@ export class CustomSidenavComponent {
   menuItems: MenuItem[] = [
     { icon: 'dashboard', label: 'Tableau de bord', route: '/tableau-de-bord' },
     //{ icon: 'video_library', label: 'Videos', route: '/videos' },
-    { icon: 'analytics', label: 'Analytics', route: '/analytics' },
-    { icon: 'account_circle', label: 'Account', route: '/account',
+    { icon: 'analytics', label: 'Analytiques', route: '/analytics' },
+    { icon: 'account_circle', label: 'Compte', route: '/account',
       subItems: [
-      { icon: 'person', label: 'Profile', route: '/profile' },
-      { icon: 'settings', label: 'Settings', route: '/settings' },
-      { icon: 'logout', label: 'Logout', route: '/logout' },
+      { icon: 'person', label: 'Profil', route: '/profile' },
+      { icon: 'settings', label: 'Paramètres', route: '/settings' },
+      { icon: 'logout', label: 'Déconnexion', route: '/logout' },
     ]},
   ];
   profilePicSize = computed(() => this.sideNavCollapsed() ? '32' : '100');

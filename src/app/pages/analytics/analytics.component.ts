@@ -12,7 +12,7 @@ import { BehaviorSubject, interval, Subscription } from 'rxjs';
   template: `
     <div class="analytics-container">
       <div class="dashboard-header">
-        <h1 class="page-title">Analytics Dashboard</h1>
+        <h1 class="page-title">Tableau de bord analytique</h1>
         <div class="last-update">Last updated: {{ lastUpdate | date:'medium' }}</div>
       </div>
       

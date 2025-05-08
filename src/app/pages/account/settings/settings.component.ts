@@ -29,14 +29,14 @@ import { MatInputModule } from '@angular/material/input';
   ],
   template: `
     <div class="settings-container">
-      <h1 class="settings-title">Settings</h1>
+      <h1 class="settings-title">Paramètres</h1>
 
       <div class="settings-grid">
         <!-- Account Settings -->
         <mat-card class="settings-card">
           <mat-card-header>
             <mat-icon mat-card-avatar>person</mat-icon>
-            <mat-card-title>Account Settings</mat-card-title>
+            <mat-card-title>Paramètres du compte</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <mat-list>
@@ -67,7 +67,7 @@ import { MatInputModule } from '@angular/material/input';
         <mat-card class="settings-card">
           <mat-card-header>
             <mat-icon mat-card-avatar>palette</mat-icon>
-            <mat-card-title>Appearance</mat-card-title>
+            <mat-card-title>Apparence</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <mat-list>
@@ -104,7 +104,7 @@ import { MatInputModule } from '@angular/material/input';
         <mat-card class="settings-card">
           <mat-card-header>
             <mat-icon mat-card-avatar>security</mat-icon>
-            <mat-card-title>Privacy & Security</mat-card-title>
+            <mat-card-title>Confidentialité & Sécurité</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <mat-list>
@@ -135,7 +135,7 @@ import { MatInputModule } from '@angular/material/input';
         <mat-card class="settings-card">
           <mat-card-header>
             <mat-icon mat-card-avatar>language</mat-icon>
-            <mat-card-title>Language & Region</mat-card-title>
+            <mat-card-title>Langue & Région</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <mat-list>

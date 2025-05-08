@@ -47,22 +47,22 @@ import { MatInputModule } from '@angular/material/input';
           
           <div class="form-grid">
             <mat-form-field appearance="outline">
-              <mat-label>First Name</mat-label>
+              <mat-label>Prénom</mat-label>
               <input matInput value="John">
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Last Name</mat-label>
+              <mat-label>Nom</mat-label>
               <input matInput value="Doe">
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Email</mat-label>
+              <mat-label>Courriel</mat-label>
               <input matInput value="john.doe@example.com">
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Phone</mat-label>
+              <mat-label>Téléphone</mat-label>
               <input matInput value="+1 234 567 890">
             </mat-form-field>
           </div>
@@ -70,17 +70,17 @@ import { MatInputModule } from '@angular/material/input';
           <h2>Additional Information</h2>
           <div class="form-grid">
             <mat-form-field appearance="outline">
-              <mat-label>Department</mat-label>
+              <mat-label>Département</mat-label>
               <input matInput value="Sales">
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Location</mat-label>
+              <mat-label>Localisation</mat-label>
               <input matInput value="New York">
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Bio</mat-label>
+              <mat-label>Biographie</mat-label>
               <textarea matInput rows="4">Experienced sales professional with over 5 years in the industry.</textarea>
             </mat-form-field>
           </div>
